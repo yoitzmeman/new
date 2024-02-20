@@ -1,0 +1,35 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import tensorflow as tf
+from tensorflow.keras.datasets import cifar10
+from tensorflow.keras.utils import to_categorical
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+
+(X_train, Y_train), (X_test, Y_test) = cifar10.load_data()
+X_train, X_test = X_train / 255.0, X_test / 255.0
+Y_train_en, Y_test_en = to_categorical(Y_train, 10), to_categorical(Y_test, 10)
+
+datagen = ImageDataGenerator(rotation_range=10, horizontal_flip=True, width_shift_range=0.1, height_shift_range=0.1)
+train_gen = datagen.flow(X_train, Y_train_en, batch_size=64)
+
+model = Sequential([
+    Conv2D(32, (4, 4), input_shape=(32, 32, 3), activation='relu'),
+    MaxPooling2D(pool_size=(2, 2)),
+    Conv2D(32, (4, 4), activation='relu'),
+    MaxPooling2D(pool_size=(2, 2)),
+    Flatten(),
+    Dense(128, activation='relu'),
+    Dense(10, activation='softmax')
+])
+
+model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+model.summary()
+
+history = model.fit(train_gen, epochs=10, verbose=1, validation_data=(X_test, Y_test_en))
+
+test_loss, test_accuracy = model.evaluate(X_test, Y_test_en)
+print(f"Test accuracy: {test_accuracy * 100:.2f}%")
