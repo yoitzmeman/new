@@ -4,6 +4,7 @@ import torch.optim as optim
 from torchvision import datasets, models, transforms
 import numpy as np
 from PIL import Image
+
 data_transforms = {
     'train': transforms.Compose([
         transforms.Resize(256),
@@ -12,21 +13,27 @@ data_transforms = {
         transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
     ]),
 }
+
 model = models.resnet50(pretrained=True)
 num_features = model.fc.in_features
 model.fc = nn.Linear(num_features, 2)
+
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
+
 image_path = '/…../Path to Cat1.jpg'
 image = Image.open(image_path)
 image = data_transforms['train'](image)
 image = image.unsqueeze(0) # Add batch dimension
+
 #model.load_state_dict(torch.load('/content/drive/MyDrive/20CSEL76-LAB Programs/resnet50-0676ba61.pth'))
 torch.save(model.state_dict(), 'resnet50_pretrained_weights.pth')
+
 model.eval()
 with torch.no_grad():
     outputs = model(image)
     _, predicted = torch.max(outputs, 1)
+
 class_labels = ['cat', 'dog']
 predicted_class = class_labels[predicted.item()]
 print(f'The image is classified as: {predicted_class}')
