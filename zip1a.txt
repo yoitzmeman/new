@@ -22,3 +22,15 @@ accuracy = knn.score(X_test, y_test)
 print(f"KNN Accuracy: {accuracy:.2f}")
 
 # Output: KNN Accuracy: 0.30
+
+# (X_train, y_train), (X_test, y_test) = cifar10.load_data()
+
+# X_train = X_train.reshape(X_train.shape[0], -1).astype('float32') / 255.0
+# X_test = X_test.reshape(X_test.shape[0], -1).astype('float32') / 255.0
+
+# X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.2, random_state=42)
+
+# scaler = StandardScaler()
+# X_train = scaler.fit_transform(X_train)
+# X_val = scaler.transform(X_val)
+# X_test = scaler.transform(X_test)
